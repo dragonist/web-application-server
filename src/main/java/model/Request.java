@@ -5,9 +5,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import util.HttpRequestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class Header {
+import util.HttpRequestUtils;
+import util.IOUtils;
+
+public class Request {
+	private static final Logger logger = LoggerFactory.getLogger(Request.class);
 
 	// GET /index HTTP/1.1
 	// Host: localhost:8080
@@ -28,10 +33,10 @@ public class Header {
 	Map<String, String> parameters;
 	Map<String, String> headerInfo;
 
-	public Header() {
+	public Request() {
 	}
 
-	public Header(BufferedReader br) throws IOException {
+	public Request(BufferedReader br) throws IOException {
 		headerInfo = new HashMap<String, String>();
 		String line = br.readLine();
 		if (line == null)
@@ -41,16 +46,21 @@ public class Header {
 		url = tokens[1];
 		protocol = tokens[2];
 
-		if (url.contains("?")) {
-			tokens = url.split("\\?");
-			url = tokens[0];
-			parameters = HttpRequestUtils.parseQueryString(tokens[1]);
-		}
-
 		while (!"".equals(line = br.readLine())) {
 			HttpRequestUtils.Pair pair = HttpRequestUtils.parseHeader(line);
 			headerInfo.put(pair.getKey(), pair.getValue());
 		}
+
+		if (url.contains("?")) {
+			tokens = url.split("\\?");
+			url = tokens[0];
+			line = tokens[1];
+		}
+		if ("POST".equals(method)) {
+			line = IOUtils.readData(br, Integer.parseInt(headerInfo.get("Content-Length")));
+		}
+		logger.debug("line", line);
+		parameters = HttpRequestUtils.parseQueryString(line);
 	}
 
 	public String getUrl() {

@@ -1,11 +1,11 @@
 package controller;
 
-import model.Header;
+import model.Request;
 import mvc.Controller;
 
 public class loginController extends Controller {
 
-	public String render(Header header) {
+	public String render(Request request) {
 		return "/index.html";
 	}
 

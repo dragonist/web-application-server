@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.file.Files;
 
-import model.Header;
+import model.Request;
 import mvc.Controller;
 
 import org.slf4j.Logger;
@@ -37,13 +37,13 @@ public class RequestHandler extends Thread {
 		try (InputStream in = connection.getInputStream(); 
 				OutputStream out = connection.getOutputStream(); 
 				BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
-			Header header = new Header(br);
+			Request request = new Request(br);
 			
-			Controller c = rm.getController(header.getUrl());
+			Controller c = rm.getController(request.getUrl());
 			// TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
 			DataOutputStream dos = new DataOutputStream(out);
-			log.debug("url : {}",header.getUrl());
-			String htmlFileName = c.render(header);
+			log.debug("url : {}",request.getUrl());
+			String htmlFileName = c.render(request);
 			byte[] body = Files.readAllBytes(new File("./webapp" + htmlFileName).toPath());
 			response200Header(dos, body.length);
 			responseBody(dos, body);

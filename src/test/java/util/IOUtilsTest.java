@@ -12,7 +12,7 @@ public class IOUtilsTest {
 	
 	@Test
 	public void readData() throws Exception {
-		String data = "abcd123";
+		String data = "abcd123\n sdfsdf \nsdfsdf sdf:sdfsdf ";
 		StringReader sr = new StringReader(data);
 		BufferedReader br = new BufferedReader(sr);
 		

@@ -1,9 +1,9 @@
 package mvc;
 
-import model.Header;
+import model.Request;
 
 public abstract class Controller {
 
-	public abstract String render(Header header);
+	public abstract String render(Request request);
 
 }

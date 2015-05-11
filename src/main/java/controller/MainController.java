@@ -1,12 +1,12 @@
 package controller;
 
-import model.Header;
+import model.Request;
 import mvc.Controller;
 
 public class MainController extends Controller{
 
-	public String render(Header header) {
-		return header.getUrl();
+	public String render(Request request) {
+		return request.getUrl();
 	}
 
 
