@@ -5,13 +5,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import util.HttpRequestUtils;
 
 public class Header {
-	private static final Logger logger = LoggerFactory.getLogger(Header.class);
 
 	// GET /index HTTP/1.1
 	// Host: localhost:8080
@@ -38,18 +34,19 @@ public class Header {
 	public Header(BufferedReader br) throws IOException {
 		headerInfo = new HashMap<String, String>();
 		String line = br.readLine();
-		if (line == null) return;
+		if (line == null)
+			return;
 		String[] tokens = line.split(" ");
 		method = tokens[0];
 		url = tokens[1];
 		protocol = tokens[2];
-	
+
 		if (url.contains("?")) {
 			tokens = url.split("\\?");
 			url = tokens[0];
-			parameters = HttpRequestUtils.parseQueryString(tokens[1]);			
+			parameters = HttpRequestUtils.parseQueryString(tokens[1]);
 		}
-		
+
 		while (!"".equals(line = br.readLine())) {
 			HttpRequestUtils.Pair pair = HttpRequestUtils.parseHeader(line);
 			headerInfo.put(pair.getKey(), pair.getValue());
@@ -58,6 +55,14 @@ public class Header {
 
 	public String getUrl() {
 		return url;
+	}
+
+	public Map<String, String> getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(Map<String, String> parameters) {
+		this.parameters = parameters;
 	}
 
 	public void setUrl(String url) {

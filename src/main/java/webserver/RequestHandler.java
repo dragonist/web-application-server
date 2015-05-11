@@ -11,20 +11,24 @@ import java.net.Socket;
 import java.nio.file.Files;
 
 import model.Header;
+import mvc.Controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sun.util.logging.resources.logging;
 import util.HttpRequestUtils;
+import util.RequestMapping;
 
 public class RequestHandler extends Thread {
 	private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
 
 	private Socket connection;
-
-	public RequestHandler(Socket connectionSocket) {
+	private RequestMapping rm;
+	
+	public RequestHandler(Socket connectionSocket, RequestMapping rm) {
 		this.connection = connectionSocket;
+		this.rm = rm;
 	}
 
 	public void run() {
@@ -34,11 +38,13 @@ public class RequestHandler extends Thread {
 				OutputStream out = connection.getOutputStream(); 
 				BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
 			Header header = new Header(br);
-
+			
+			Controller c = rm.getController(header.getUrl());
 			// TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
 			DataOutputStream dos = new DataOutputStream(out);
 			log.debug("url : {}",header.getUrl());
-			byte[] body = Files.readAllBytes(new File("./webapp" + header.getUrl()).toPath());
+			String htmlFileName = c.render(header);
+			byte[] body = Files.readAllBytes(new File("./webapp" + htmlFileName).toPath());
 			response200Header(dos, body.length);
 			responseBody(dos, body);
 		} catch (IOException e) {
@@ -66,4 +72,6 @@ public class RequestHandler extends Thread {
 			log.error(e.getMessage());
 		}
 	}
+
+
 }
