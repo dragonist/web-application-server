@@ -1,9 +1,10 @@
 package mvc;
 
 import model.Request;
+import model.Response;
 
 public abstract class Controller {
 
-	public abstract String render(Request request);
+	public abstract Response render(Request request, Response response);
 
 }

@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 
 import model.Request;
+import model.Response;
 import mvc.Controller;
 
 import org.slf4j.Logger;
@@ -38,40 +39,18 @@ public class RequestHandler extends Thread {
 				OutputStream out = connection.getOutputStream(); 
 				BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
 			Request request = new Request(br);
-			
 			Controller c = rm.getController(request.getUrl());
 			// TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
 			DataOutputStream dos = new DataOutputStream(out);
 			log.debug("url : {}",request.getUrl());
-			String htmlFileName = c.render(request);
-			byte[] body = Files.readAllBytes(new File("./webapp" + htmlFileName).toPath());
-			response200Header(dos, body.length);
-			responseBody(dos, body);
+			Response response = c.render(request, new Response());
+			response.send(dos);
 		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
 	}
 
-	private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-		try {
-			dos.writeBytes("HTTP/1.1 200 Document Follows \r\n");
-			dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-			dos.writeBytes("\r\n");
-		} catch (IOException e) {
-			log.error(e.getMessage());
-		}
-	}
-
-	private void responseBody(DataOutputStream dos, byte[] body) {
-		try {
-			dos.write(body, 0, body.length);
-			dos.writeBytes("\r\n");
-			dos.flush();
-		} catch (IOException e) {
-			log.error(e.getMessage());
-		}
-	}
+	
 
 
 }

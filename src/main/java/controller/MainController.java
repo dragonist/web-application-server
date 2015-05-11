@@ -1,14 +1,14 @@
 package controller;
 
 import model.Request;
+import model.Response;
 import mvc.Controller;
 
 public class MainController extends Controller{
 
-	public String render(Request request) {
-		return request.getUrl();
+	public Response render(Request request, Response response) {
+		response.setView(request.getUrl());
+		return response;
 	}
-
-
 	
 }

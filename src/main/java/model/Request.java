@@ -5,14 +5,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import util.HttpRequestUtils;
 import util.IOUtils;
 
 public class Request {
-	private static final Logger logger = LoggerFactory.getLogger(Request.class);
 
 	// GET /index HTTP/1.1
 	// Host: localhost:8080
@@ -59,7 +55,6 @@ public class Request {
 		if ("POST".equals(method)) {
 			line = IOUtils.readData(br, Integer.parseInt(headerInfo.get("Content-Length")));
 		}
-		logger.debug("line", line);
 		parameters = HttpRequestUtils.parseQueryString(line);
 	}
 
