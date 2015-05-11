@@ -50,6 +50,7 @@ public class HttpRequestUtils {
 			this.value = value;
 		}
 		
+
 		public String getKey() {
 			return key;
 		}
@@ -94,4 +95,5 @@ public class HttpRequestUtils {
 			return "Pair [key=" + key + ", value=" + value + "]";
 		}
 	}
+
 }
