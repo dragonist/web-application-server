@@ -16,8 +16,9 @@ public class Response {
 	private static final Logger logger = LoggerFactory.getLogger(Response.class);
 	String view;
 	byte[] body;
+	String contentType = "Content-Type: text/html;charset=utf-8\r\n";
 	Map<String, String> cookies = new HashMap<String, String>();
-	
+
 	public void setCookie(String key, String value) {
 		cookies.put(key, value);
 	}
@@ -30,23 +31,23 @@ public class Response {
 		if (view.contains("redirect:")) {
 			view = view.replace("redirect:", "");
 			response302Header(dos, view);
-		}else{
+		} else {
 			byte[] body = Files.readAllBytes(new File("./webapp" + view).toPath());
 			response200Header(dos, body.length);
 			responseBody(dos, body);
 		}
 		dos.flush();
 	}
-	
+
 	private void response302Header(DataOutputStream dos, String view) {
-		try{
+		try {
 			dos.writeBytes("HTTP/1.1 302 Found \r\n");
-			dos.writeBytes("Location: http://localhost:8080"+view+" \r\n");
+			dos.writeBytes("Location: http://localhost:8080" + view + " \r\n");
 			if (!cookies.isEmpty()) {
-				dos.writeBytes("Set-Cookie: "+HttpResponseUtils.parseToQueryString(cookies));
+				dos.writeBytes("Set-Cookie: " + HttpResponseUtils.parseToQueryString(cookies));
 			}
 			dos.writeBytes("\r\n");
-		}catch(IOException e){
+		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
 	}
@@ -54,9 +55,9 @@ public class Response {
 	private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
 		try {
 			dos.writeBytes("HTTP/1.1 200 Document Follows \r\n");
-			dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+			dos.writeBytes(contentType);
 			if (!cookies.isEmpty()) {
-				dos.writeBytes("Set-Cookie: "+HttpResponseUtils.parseToQueryString(cookies));
+				dos.writeBytes("Set-Cookie: " + HttpResponseUtils.parseToQueryString(cookies));
 			}
 			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
 			dos.writeBytes("\r\n");
@@ -76,6 +77,15 @@ public class Response {
 
 	public void setCookies(Map<String, String> cookies) {
 		this.cookies.putAll(cookies);
+	}
+
+	public void setContentType(String string) {
+		if (string.contains("text/css") ) {
+			contentType = "Content-Type: "+string;
+		}
+		if ( "image/webp,*/*;q=0.8".equals(string)) {
+			contentType = "Content-Type: image/png \r\n";
+		}
 	}
 
 }

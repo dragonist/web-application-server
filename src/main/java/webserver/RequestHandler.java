@@ -38,6 +38,7 @@ public class RequestHandler extends Thread {
 			Request request = new Request(br);
 			Controller c = rm.getController(request.getUrl());
 			Response response = c.render(request, new Response());
+			response.setContentType(request.getHeaderInfo().get("Accept"));
 			response.setCookies(request.getCookies());
 			response.send(dos);
 //			log.debug("url : {}",request.getUrl());
