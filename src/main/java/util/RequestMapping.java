@@ -13,7 +13,7 @@ public class RequestMapping {
 	
 	public RequestMapping() {
 		controllers.put("/index.html",new MainController());
-		controllers.put("/login.html",new loginController());
+		controllers.put("/login",new loginController());
 		controllers.put("/create",new createController());
 	}
 	

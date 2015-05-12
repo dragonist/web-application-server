@@ -62,6 +62,11 @@ public class Request {
 		return url;
 	}
 
+	public Map<String, String> getCookies() {
+		String line = headerInfo.get("Cookie");
+		return HttpRequestUtils.parseQueryString(line);
+	}
+
 	public Map<String, String> getParameters() {
 		return parameters;
 	}

@@ -11,7 +11,7 @@ public class MapDao{
 	public static void insert(User user){
 		users.put(user.getUserId(), user);
 	}
-	public static void select(String id){
-		users.get(id);
+	public static User select(String id){
+		return users.get(id);
 	}
 }
